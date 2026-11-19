@@ -1,583 +1,276 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import {
-  TrendingUp,
-  TrendingDown,
-  Search,
-  Upload,
-  Camera,
-  Sparkles,
-  ShieldAlert,
-  Target,
-  CheckCircle2,
-  AlertTriangle,
-  BookOpen,
-  Star,
-  History,
-  BarChart3,
-  Activity,
-  Trash2,
-  Plus,
-  Info,
-  Clock,
-  Layers,
-  Image as ImageIcon
+  TrendingUp, Search, Upload, Camera, Sparkles, ShieldAlert,
+  CheckCircle2, AlertTriangle, BookOpen, Star, History,
+  BarChart3, Activity, Trash2, Clock, Layers, Image as ImageIcon
 } from 'lucide-react';
 
-const TEXT = {
+const T = {
   gu: {
-    appName: 'Technical Analysis',
-    tagline: 'Share Bazaar Samajva Mate Saral AI Platform (NSE / BSE)',
-    tabAnalyze: 'Stock Analysis',
-    tabPhoto: 'AI Photo Analyzer',
-    tabWatchlist: 'Watchlist & History',
-    tabGuide: '5-Min Guide',
-    searchPlaceholder: 'Stock naam athva symbol lakho (jem ke RELIANCE, TCS, SBIN)...',
-    dataNote: 'EOD Market Reference Data • Educational Purpose Only',
-    open: 'Open',
-    high: 'Day High',
-    low: 'Day Low',
-    prevClose: 'Prev Close',
-    volume: 'Volume',
-    verdictTitle: 'Aaj no Saral Signal (9 Indicators Par Thi)',
-    buyZone: 'Kharidva no Bhav (Buy Zone)',
-    targets: 'Target 1 & Target 2',
-    stopLoss: 'Stop Loss (Nuksan Rokva)',
-    riskReward: 'Risk / Reward',
-    whySignal: 'Aa Signal Kem Aavyo? (Saral Samjuti)',
-    chartTitle: 'Interactive Price Chart (Support & Resistance Sathe)',
-    candle: 'Candlestick',
-    line: 'Line Chart',
-    support: 'Support (Niche Teko)',
-    resistance: 'Resistance (Upar Rokavat)',
-    indicatorsTitle: '9 Technical Indicators ni Saral Mahiti',
-    fundamentalsTitle: 'Company ni Fundamental Majbuti',
-    marketCap: 'Market Cap',
-    peRatio: 'P/E Ratio',
-    eps: 'EPS (1 Share ni Kamai)',
-    debtEquity: 'Debt / Equity (Karj)',
-    revGrowth: 'Revenue Growth',
-    profitGrowth: 'Profit Growth',
-    photoTitle: 'Koi Pan Stock Chart no Photo Upload Karo',
-    photoSub: 'TradingView, Zerodha, Groww ke Angel One no screenshot mukho — AI batavse kyare BUY karvu ane kyare SELL karvu.',
-    uploadBtn: 'Gallery / Camera Mathi Photo Pasand Karo',
-    sampleTitle: 'Photo Nathi? Niche Na Sample Chart Par Click Kari Test Karo:',
-    whenBuy: 'Kyare BUY Karvu? (Kharidi)',
-    whenSell: 'Kyare SELL Karvu? (Vechan)',
-    patternDetected: 'Chart Pattern',
-    addWatchlist: 'Watchlist ma Umero',
-    inWatchlist: 'Watchlist ma Chhe',
-    savedWatchlist: 'Tamari Pasandida Stocks (Watchlist)',
-    analysisHistory: 'Juna Analysis no Record (History)',
-    clearHistory: 'Clear Karo',
-    noWatchlist: 'Haju koi stock watchlist ma nathi. Upar "Watchlist ma Umero" dabavo.',
-    noHistory: 'Haju koi analysis save nathi thayu.',
-    disclaimer: 'Disclaimer: Aa website fakt shikshan (educational) ane technical analysis samajva mate chhe. Ame SEBI registered advisor nathi. Paisa rokta pehla tamara financial advisor ni salah jarur lo.',
-    bullish: 'BULLISH (Teji)',
-    bearish: 'BEARISH (Mandi)',
-    neutral: 'SIDEWAYS (Sthir)'
+    name: 'Technical Analysis',
+    sub: 'Share Bazaar Samajva Mate Saral AI Platform (NSE / BSE)',
+    t1: 'Stock Analysis', t2: 'AI Photo Analyzer', t3: 'Watchlist & History', t4: '5-Min Guide',
+    ph: 'Stock naam ke symbol lakho (RELIANCE, TCS, SBIN)...',
+    note: 'EOD Market Reference • Educational Only',
+    verdict: 'Aaj no Saral Signal (9 Indicators Par Thi)',
+    buyZ: 'Buy Zone (Kharidi)', tgt: 'Target 1 & 2', sl: 'Stop Loss', rr: 'Risk / Reward',
+    chart: 'Price Chart (Support & Resistance Sathe)',
+    candle: 'Candlestick', line: 'Line Chart',
+    sup: 'Support (Niche Teko)', res: 'Resistance (Upar Rokavat)',
+    indTitle: '9 Technical Indicators ni Saral Samjuti',
+    fundTitle: 'Company ni Fundamental Majbuti',
+    pTitle: 'Koi Pan Stock Chart no Photo Upload Karo',
+    pSub: 'TradingView, Zerodha ke Groww no screenshot mukho — AI batavse kyare BUY karvu ane kyare SELL karvu.',
+    upBtn: 'Gallery / Camera Mathi Photo Pasand Karo',
+    samp: 'Photo Nathi? Niche Na Sample Chart Par Click Kari Test Karo:',
+    wBuy: 'Kyare BUY Karvu? (Kharidi)', wSell: 'Kyare SELL Karvu? (Vechan)',
+    addW: 'Watchlist ma Umero', inW: 'Watchlist ma Chhe',
+    disc: 'Disclaimer: Aa website fakt shikshan (educational) mate chhe. Ame SEBI registered advisor nathi. Paisa rokta pehla financial advisor ni salah jarur lo.',
+    bull: 'BULLISH (Teji)', bear: 'BEARISH (Mandi)', neut: 'SIDEWAYS (Sthir)'
   },
   hi: {
-    appName: 'Technical Analysis',
-    tagline: 'Share Bazaar Samajhne Ke Liye Saral AI Platform (NSE / BSE)',
-    tabAnalyze: 'Stock Analysis',
-    tabPhoto: 'AI Photo Analyzer',
-    tabWatchlist: 'Watchlist & History',
-    tabGuide: '5-Min Guide',
-    searchPlaceholder: 'Stock ka naam ya symbol likhein (jaise RELIANCE, TCS, SBIN)...',
-    dataNote: 'EOD Market Reference Data • Educational Purpose Only',
-    open: 'Open',
-    high: 'Day High',
-    low: 'Day Low',
-    prevClose: 'Prev Close',
-    volume: 'Volume',
-    verdictTitle: 'Aaj Ka Saral Signal (9 Indicators Ke Aadhar Par)',
-    buyZone: 'Kharidne Ka Zone (Buy Zone)',
-    targets: 'Target 1 & Target 2',
-    stopLoss: 'Stop Loss (Nuksan Rokne Ke Liye)',
-    riskReward: 'Risk / Reward',
-    whySignal: 'Yeh Signal Kyun Aaya? (Saral Bhasha Mein)',
-    chartTitle: 'Interactive Price Chart (Support & Resistance Ke Saath)',
-    candle: 'Candlestick',
-    line: 'Line Chart',
-    support: 'Support (Niche Sahara)',
-    resistance: 'Resistance (Upar Rukawat)',
-    indicatorsTitle: '9 Technical Indicators Ki Saral Jankari',
-    fundamentalsTitle: 'Company Ki Fundamental Majbooti',
-    marketCap: 'Market Cap',
-    peRatio: 'P/E Ratio',
-    eps: 'EPS (Prati Share Kamai)',
-    debtEquity: 'Debt / Equity (Karz)',
-    revGrowth: 'Revenue Growth',
-    profitGrowth: 'Profit Growth',
-    photoTitle: 'Kisi Bhi Stock Chart Ka Photo Upload Karein',
-    photoSub: 'TradingView, Zerodha, Groww ya Angel One ka screenshot dalein — AI batayega kab BUY karein aur kab SELL karein.',
-    uploadBtn: 'Gallery / Camera Se Photo Chunein',
-    sampleTitle: 'Photo Nahi Hai? Niche Diye Sample Chart Par Click Karke Test Karein:',
-    whenBuy: 'Kab BUY Karein? (Kharidari)',
-    whenSell: 'Kab SELL Karein? (Bikwali)',
-    patternDetected: 'Chart Pattern',
-    addWatchlist: 'Watchlist Mein Jodein',
-    inWatchlist: 'Watchlist Mein Hai',
-    savedWatchlist: 'Aapke Pasandida Stocks (Watchlist)',
-    analysisHistory: 'Purane Analysis Ka Record (History)',
-    clearHistory: 'Clear Karein',
-    noWatchlist: 'Abhi koi stock watchlist mein nahi hai.',
-    noHistory: 'Abhi koi analysis save nahi hua hai.',
-    disclaimer: 'Disclaimer: Yeh website keval educational aur technical analysis samajhne ke liye hai. Hum SEBI registered advisor nahi hain. Nivesh se pehle apne financial advisor ki salah lein.',
-    bullish: 'BULLISH (Tezi)',
-    bearish: 'BEARISH (Mandi)',
-    neutral: 'SIDEWAYS (Sthir)'
+    name: 'Technical Analysis',
+    sub: 'Share Bazaar Samajhne Ke Liye Saral AI Platform (NSE / BSE)',
+    t1: 'Stock Analysis', t2: 'AI Photo Analyzer', t3: 'Watchlist & History', t4: '5-Min Guide',
+    ph: 'Stock ka naam ya symbol likhein (RELIANCE, TCS, SBIN)...',
+    note: 'EOD Market Reference • Educational Only',
+    verdict: 'Aaj Ka Saral Signal (9 Indicators Ke Aadhar Par)',
+    buyZ: 'Buy Zone (Kharid)', tgt: 'Target 1 & 2', sl: 'Stop Loss', rr: 'Risk / Reward',
+    chart: 'Price Chart (Support & Resistance Ke Saath)',
+    candle: 'Candlestick', line: 'Line Chart',
+    sup: 'Support (Niche Sahara)', res: 'Resistance (Upar Rukawat)',
+    indTitle: '9 Technical Indicators Ki Saral Jankari',
+    fundTitle: 'Company Ki Fundamental Majbooti',
+    pTitle: 'Kisi Bhi Stock Chart Ka Photo Upload Karein',
+    pSub: 'TradingView, Zerodha ya Groww ka screenshot dalein — AI batayega kab BUY aur kab SELL karein.',
+    upBtn: 'Gallery / Camera Se Photo Chunein',
+    samp: 'Photo Nahi Hai? Niche Diye Sample Chart Par Click Karein:',
+    wBuy: 'Kab BUY Karein? (Kharidari)', wSell: 'Kab SELL Karein? (Bikwali)',
+    addW: 'Watchlist Mein Jodein', inW: 'Watchlist Mein Hai',
+    disc: 'Disclaimer: Yeh website keval educational purpose ke liye hai. Hum SEBI registered advisor nahi hain. Nivesh se pehle financial advisor ki salah lein.',
+    bull: 'BULLISH (Tezi)', bear: 'BEARISH (Mandi)', neut: 'SIDEWAYS (Sthir)'
   },
   en: {
-    appName: 'Technical Analysis',
-    tagline: 'Simple, Plain-Language Indian Stock Market Analyzer (NSE / BSE)',
-    tabAnalyze: 'Stock Analysis',
-    tabPhoto: 'AI Photo Analyzer',
-    tabWatchlist: 'Watchlist & History',
-    tabGuide: '5-Min Guide',
-    searchPlaceholder: 'Search NSE/BSE stock by name or ticker (e.g., RELIANCE, TCS, SBIN)...',
-    dataNote: 'EOD Market Reference Data • Educational Purpose Only',
-    open: 'Open',
-    high: 'Day High',
-    low: 'Day Low',
-    prevClose: 'Prev Close',
-    volume: 'Volume',
-    verdictTitle: 'Overall Action Signal (From 9 Technical Indicators)',
-    buyZone: 'Entry / Buy Zone',
-    targets: 'Target 1 & Target 2',
-    stopLoss: 'Stop Loss (Max Risk)',
-    riskReward: 'Risk / Reward',
-    whySignal: 'Why This Signal? (Plain-Language Breakdown)',
-    chartTitle: 'Interactive Price Chart with Support & Resistance',
-    candle: 'Candlestick',
-    line: 'Line Chart',
-    support: 'Support Level',
-    resistance: 'Resistance Level',
-    indicatorsTitle: '9 Technical Indicators Explained Simply',
-    fundamentalsTitle: 'Company Fundamental Health',
-    marketCap: 'Market Cap',
-    peRatio: 'P/E Ratio',
-    eps: 'EPS (TTM)',
-    debtEquity: 'Debt / Equity',
-    revGrowth: 'Revenue Growth (YoY)',
-    profitGrowth: 'Profit Growth (YoY)',
-    photoTitle: 'Upload Any Stock Chart Photo for AI Analysis',
-    photoSub: 'Upload a screenshot from TradingView, Zerodha, or Groww to get clear BUY and SELL zones.',
-    uploadBtn: 'Choose Chart Photo from Gallery / Camera',
-    sampleTitle: 'No screenshot handy? Test with these sample charts:',
-    whenBuy: 'When to BUY',
-    whenSell: 'When to SELL',
-    patternDetected: 'Detected Pattern',
-    addWatchlist: 'Add to Watchlist',
-    inWatchlist: 'Saved in Watchlist',
-    savedWatchlist: 'Your Saved Watchlist',
-    analysisHistory: 'Recent Analysis History',
-    clearHistory: 'Clear All',
-    noWatchlist: 'No stocks in your watchlist yet. Tap "Add to Watchlist" on any stock.',
-    noHistory: 'No saved analyses yet.',
-    disclaimer: 'Disclaimer: This platform is strictly for educational and technical study purposes. We are not SEBI-registered investment advisors. Consult a certified financial advisor before trading.',
-    bullish: 'BULLISH',
-    bearish: 'BEARISH',
-    neutral: 'SIDEWAYS'
+    name: 'Technical Analysis',
+    sub: 'Simple Plain-Language Indian Stock Market Analyzer (NSE / BSE)',
+    t1: 'Stock Analysis', t2: 'AI Photo Analyzer', t3: 'Watchlist & History', t4: '5-Min Guide',
+    ph: 'Search NSE/BSE stock (RELIANCE, TCS, SBIN)...',
+    note: 'EOD Market Reference • Educational Only',
+    verdict: 'Overall Action Signal (From 9 Technical Indicators)',
+    buyZ: 'Entry / Buy Zone', tgt: 'Target 1 & 2', sl: 'Stop Loss', rr: 'Risk / Reward',
+    chart: 'Price Chart with Support & Resistance',
+    candle: 'Candlestick', line: 'Line Chart',
+    sup: 'Support Level', res: 'Resistance Level',
+    indTitle: '9 Technical Indicators Explained Simply',
+    fundTitle: 'Company Fundamental Health',
+    pTitle: 'Upload Any Stock Chart Photo for AI Analysis',
+    pSub: 'Upload a screenshot from TradingView, Zerodha, or Groww to see clear BUY and SELL zones.',
+    upBtn: 'Choose Chart Photo from Gallery / Camera',
+    samp: 'No screenshot handy? Test with these sample charts:',
+    wBuy: 'When to BUY', wSell: 'When to SELL',
+    addW: 'Add to Watchlist', inW: 'Saved in Watchlist',
+    disc: 'Disclaimer: Strictly for educational purposes. Not SEBI-registered investment advice. Consult a certified financial advisor before trading.',
+    bull: 'BULLISH', bear: 'BEARISH', neut: 'SIDEWAYS'
   }
 };
 
 const STOCKS = [
+  { sym: 'RELIANCE.NS', name: 'Reliance Industries', sec: 'Energy & Telecom', p: 1294.5, pc: 1278.2, o: 1281, h: 1301.4, l: 1276.5, vol: '1.42 Cr', bias: 1, f: { cap: '₹17.5L Cr', pe: '24.8', eps: '₹52.2', de: '0.41', rev: '+11.4%', prof: '+9.8%' } },
+  { sym: 'TCS.NS', name: 'Tata Consultancy Services', sec: 'IT Services', p: 4118.0, pc: 4085.5, o: 4092, h: 4134, l: 4079, vol: '24.8 Lakh', bias: 1, f: { cap: '₹14.9L Cr', pe: '30.2', eps: '₹136.3', de: '0.08', rev: '+8.2%', prof: '+10.5%' } },
+  { sym: 'HDFCBANK.NS', name: 'HDFC Bank Ltd', sec: 'Private Bank', p: 1742.8, pc: 1751.0, o: 1749.5, h: 1756, l: 1735.2, vol: '1.68 Cr', bias: 0, f: { cap: '₹13.3L Cr', pe: '19.4', eps: '₹89.8', de: 'Bank', rev: '+16.5%', prof: '+14.2%' } },
+  { sym: 'INFY.NS', name: 'Infosys Ltd', sec: 'IT Services', p: 1868.4, pc: 1842.0, o: 1848, h: 1874.9, l: 1841.5, vol: '68.4 Lakh', bias: 1, f: { cap: '₹7.76L Cr', pe: '27.9', eps: '₹66.9', de: '0.10', rev: '+7.6%', prof: '+8.9%' } },
+  { sym: 'SBIN.NS', name: 'State Bank of India', sec: 'PSU Bank', p: 836.2, pc: 824.5, o: 827, h: 841, l: 823.8, vol: '1.95 Cr', bias: 1, f: { cap: '₹7.46L Cr', pe: '10.8', eps: '₹77.4', de: 'Bank', rev: '+14.8%', prof: '+18.1%' } },
+  { sym: 'TATAMOTORS.NS', name: 'Tata Motors Ltd', sec: 'Auto & EV', p: 788.6, pc: 806.4, o: 804, h: 807.5, l: 784, vol: '2.14 Cr', bias: -1, f: { cap: '₹2.90L Cr', pe: '9.6', eps: '₹82.1', de: '0.68', rev: '+12.1%', prof: '+21.4%' } },
+  { sym: 'ICICIBANK.NS', name: 'ICICI Bank Ltd', sec: 'Private Bank', p: 1289.0, pc: 1276.4, o: 1279, h: 1295, l: 1274, vol: '1.12 Cr', bias: 1, f: { cap: '₹9.08L Cr', pe: '18.7', eps: '₹68.9', de: 'Bank', rev: '+17.2%', prof: '+15.9%' } },
+  { sym: 'ITC.NS', name: 'ITC Ltd', sec: 'FMCG', p: 478.5, pc: 482.1, o: 481.5, h: 483.8, l: 476.2, vol: '1.54 Cr', bias: -1, f: { cap: '₹5.98L Cr', pe: '28.4', eps: '₹16.8', de: '0.01', rev: '+6.9%', prof: '+7.4%' } }
+];
+
+const SAMPLES = [
   {
-    symbol: 'RELIANCE.NS',
-    name: 'Reliance Industries Ltd',
-    sector: 'Energy & Telecom',
-    price: 1294.5,
-    prevClose: 1278.2,
-    open: 1281.0,
-    high: 1301.4,
-    low: 1276.5,
-    volume: '1.42 Cr',
-    trendBias: 1,
-    fundamentals: {
-      marketCap: '₹17.52 Lakh Cr',
-      pe: '24.8',
-      eps: '₹52.18',
-      debtEquity: '0.41',
-      revGrowth: '+11.4%',
-      profitGrowth: '+9.8%'
-    }
+    id: 'b1', title: 'Bullish Breakout (Teji)', pat: 'Resistance Breakout + High Volume', verd: 'STRONG BUY', tone: 'emerald',
+    buy: { gu: 'Price green volume sathe resistance line ni upar close thayo chhe. Retest par kharidi kari shakay.', hi: 'Price green volume ke saath resistance ke upar close hua hai. Retest par BUY karein.', en: 'Price closed above resistance with strong green volume. Enter on minor pullback.' },
+    sell: { gu: 'Breakout level thi niche aave to Stop Loss lo, athva Target 2 pase profit book karo.', hi: 'Breakout level ke niche aaye to Stop Loss lein, ya Target 2 par profit book karein.', en: 'Exit if price drops below breakout, or book profits near Target 2.' },
+    entry: '₹1,420 – ₹1,435', sl: '₹1,385', t1: '₹1,490', t2: '₹1,545', rr: '1 : 2.4'
   },
   {
-    symbol: 'TCS.NS',
-    name: 'Tata Consultancy Services',
-    sector: 'IT Services',
-    price: 4118.0,
-    prevClose: 4085.5,
-    open: 4092.0,
-    high: 4134.0,
-    low: 4079.0,
-    volume: '24.8 Lakh',
-    trendBias: 1,
-    fundamentals: {
-      marketCap: '₹14.90 Lakh Cr',
-      pe: '30.2',
-      eps: '₹136.35',
-      debtEquity: '0.08',
-      revGrowth: '+8.2%',
-      profitGrowth: '+10.5%'
-    }
+    id: 'b2', title: 'Bearish Double Top (Mandi)', pat: 'Double Top + RSI Weakness', verd: 'SELL / AVOID', tone: 'rose',
+    buy: { gu: 'Atyare navi kharidi (BUY) na karvi. Niche strong support par green candle banva do.', hi: 'Abhi nayi kharid (BUY) na karein. Niche support par green candle ka intezar karein.', en: 'Avoid fresh BUY entries now. Wait for stabilization at lower support.' },
+    sell: { gu: 'Support tutya pachi red candle close thay to SELL karo athva profit book kari lo.', hi: 'Support tootne ke baad red candle close ho to SELL karein ya profit book karein.', en: 'Sell or book profits once neckline support breaks with a red candle.' },
+    entry: '₹945 – ₹955 (Sell)', sl: '₹978', t1: '₹905', t2: '₹875', rr: '1 : 2.2'
   },
   {
-    symbol: 'HDFCBANK.NS',
-    name: 'HDFC Bank Ltd',
-    sector: 'Private Banking',
-    price: 1742.8,
-    prevClose: 1751.0,
-    open: 1749.5,
-    high: 1756.0,
-    low: 1735.2,
-    volume: '1.68 Cr',
-    trendBias: 0,
-    fundamentals: {
-      marketCap: '₹13.28 Lakh Cr',
-      pe: '19.4',
-      eps: '₹89.80',
-      debtEquity: 'N/A (Bank)',
-      revGrowth: '+16.5%',
-      profitGrowth: '+14.2%'
-    }
-  },
-  {
-    symbol: 'INFY.NS',
-    name: 'Infosys Ltd',
-    sector: 'IT Services',
-    price: 1868.4,
-    prevClose: 1842.0,
-    open: 1848.0,
-    high: 1874.9,
-    low: 1841.5,
-    volume: '68.4 Lakh',
-    trendBias: 1,
-    fundamentals: {
-      marketCap: '₹7.76 Lakh Cr',
-      pe: '27.9',
-      eps: '₹66.95',
-      debtEquity: '0.10',
-      revGrowth: '+7.6%',
-      profitGrowth: '+8.9%'
-    }
-  },
-  {
-    symbol: 'SBIN.NS',
-    name: 'State Bank of India',
-    sector: 'PSU Banking',
-    price: 836.2,
-    prevClose: 824.5,
-    open: 827.0,
-    high: 841.0,
-    low: 823.8,
-    volume: '1.95 Cr',
-    trendBias: 1,
-    fundamentals: {
-      marketCap: '₹7.46 Lakh Cr',
-      pe: '10.8',
-      eps: '₹77.40',
-      debtEquity: 'N/A (Bank)',
-      revGrowth: '+14.8%',
-      profitGrowth: '+18.1%'
-    }
-  },
-  {
-    symbol: 'TATAMOTORS.NS',
-    name: 'Tata Motors Ltd',
-    sector: 'Automobiles & EV',
-    price: 788.6,
-    prevClose: 806.4,
-    open: 804.0,
-    high: 807.5,
-    low: 784.0,
-    volume: '2.14 Cr',
-    trendBias: -1,
-    fundamentals: {
-      marketCap: '₹2.90 Lakh Cr',
-      pe: '9.6',
-      eps: '₹82.10',
-      debtEquity: '0.68',
-      revGrowth: '+12.1%',
-      profitGrowth: '+21.4%'
-    }
-  },
-  {
-    symbol: 'ICICIBANK.NS',
-    name: 'ICICI Bank Ltd',
-    sector: 'Private Banking',
-    price: 1289.0,
-    prevClose: 1276.4,
-    open: 1279.0,
-    high: 1295.0,
-    low: 1274.0,
-    volume: '1.12 Cr',
-    trendBias: 1,
-    fundamentals: {
-      marketCap: '₹9.08 Lakh Cr',
-      pe: '18.7',
-      eps: '₹68.90',
-      debtEquity: 'N/A (Bank)',
-      revGrowth: '+17.2%',
-      profitGrowth: '+15.9%'
-    }
-  },
-  {
-    symbol: 'ITC.NS',
-    name: 'ITC Ltd',
-    sector: 'FMCG & Hotels',
-    price: 478.5,
-    prevClose: 482.1,
-    open: 481.5,
-    high: 483.8,
-    low: 476.2,
-    volume: '1.54 Cr',
-    trendBias: -1,
-    fundamentals: {
-      marketCap: '₹5.98 Lakh Cr',
-      pe: '28.4',
-      eps: '₹16.85',
-      debtEquity: '0.01',
-      revGrowth: '+6.9%',
-      profitGrowth: '+7.4%'
-    }
+    id: 'b3', title: 'Support Bounce (Reversal)', pat: 'Bullish Engulfing at Support', verd: 'BUY', tone: 'emerald',
+    buy: { gu: 'Share strong support line par aavi ne green candle banavi upar faryo chhe. Nani risk sathe BUY.', hi: 'Share strong support par aakar green candle banakar upar mud raha hai. BUY karein.', en: 'Clean bullish bounce off support offers a low-risk BUY setup.' },
+    sell: { gu: 'Upar resistance pase 50% profit book karo ane Stop Loss kharidi bhav par lavvo.', hi: 'Upar resistance par 50% profit book karein aur Stop Loss entry par le aayein.', en: 'Book 50% profit at upper resistance and trail Stop Loss to entry.' },
+    entry: '₹612 – ₹620', sl: '₹594', t1: '₹652', t2: '₹680', rr: '1 : 2.3'
   }
 ];
 
-function buildCandles(stock, timeframe) {
-  const tfFactor =
-    timeframe === '1m' ? 0.0025 :
-    timeframe === '5m' ? 0.004 :
-    timeframe === '15m' ? 0.006 :
-    timeframe === '1H' ? 0.01 :
-    timeframe === '1W' ? 0.028 : 0.015;
-
-  const count = 36;
-  const seedBase = stock.symbol.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
-  const candles = [];
-  let cursor = stock.price * (1 - stock.trendBias * tfFactor * 9);
-
-  for (let i = 0; i < count; i++) {
-    const wave = Math.sin((i + seedBase) * 0.65) * 0.5 + Math.cos((i * 1.3 + seedBase) * 0.4) * 0.5;
-    const drift = stock.trendBias * tfFactor * 0.28 * stock.price;
-    const open = i === count - 1 ? stock.open : cursor;
-    let close =
-      i === count - 1
-        ? stock.price
-        : open + drift + wave * tfFactor * stock.price * 0.75;
-
-    if (close <= stock.price * 0.7) close = stock.price * 0.72;
-    const spread = Math.abs(close - open) + tfFactor * stock.price * 0.45;
-    const high = i === count - 1 ? stock.high : Math.max(open, close) + spread * 0.45;
-    const low = i === count - 1 ? stock.low : Math.min(open, close) - spread * 0.45;
-    const vol = Math.round(45 + Math.abs(wave) * 80 + (i % 5) * 12);
-
-    candles.push({
-      idx: i + 1,
-      open: Number(open.toFixed(2)),
-      high: Number(high.toFixed(2)),
-      low: Number(low.toFixed(2)),
-      close: Number(close.toFixed(2)),
-      volume: vol
-    });
-    cursor = close;
+function makeCandles(st, tf) {
+  const m = tf === '1m' ? 0.003 : tf === '5m' ? 0.005 : tf === '15m' ? 0.007 : tf === '1H' ? 0.011 : tf === '1W' ? 0.025 : 0.015;
+  const seed = st.sym.charCodeAt(0) + st.sym.charCodeAt(1);
+  const arr = [];
+  let cur = st.p * (1 - st.bias * m * 8);
+  for (let i = 0; i < 32; i++) {
+    const w = Math.sin((i + seed) * 0.7) * 0.6;
+    const o = i === 31 ? st.o : cur;
+    const c = i === 31 ? st.p : o + st.bias * m * 0.25 * st.p + w * m * st.p * 0.7;
+    const sp = Math.abs(c - o) + m * st.p * 0.4;
+    arr.push({ i, o: +o.toFixed(1), c: +c.toFixed(1), h: +(Math.max(o, c) + sp * 0.4).toFixed(1), l: +(Math.min(o, c) - sp * 0.4).toFixed(1) });
+    cur = c;
   }
-  return candles;
+  return arr;
 }
 
-function computeIndicators(candles, stock, lang) {
-  const closes = candles.map((c) => c.close);
-  const latest = closes[closes.length - 1];
+function analyzeStock(candles, st, lang) {
+  const cls = candles.map(x => x.c);
+  const last = cls[cls.length - 1];
+  const ema20 = cls.slice(-20).reduce((a, b) => a + b, 0) / 20;
+  const ema50 = cls.reduce((a, b) => a + b, 0) / cls.length;
+  const sma200 = st.p * (st.bias > 0 ? 0.93 : st.bias < 0 ? 1.05 : 0.99);
+  const rsi = st.bias > 0 ? 61.4 : st.bias < 0 ? 38.2 : 50.5;
+  const macd = +(last - ema20).toFixed(2);
+  const vwap = +((st.h + st.l + st.p) / 3).toFixed(1);
+  const sup = +Math.min(...candles.slice(-14).map(x => x.l)).toFixed(1);
+  const res = +Math.max(...candles.slice(-14).map(x => x.h)).toFixed(1);
+  const stBull = last >= ema20 && st.bias >= 0;
 
-  const calcEMA = (arr, period) => {
-    const k = 2 / (period + 1);
-    let ema = arr[0];
-    for (let i = 1; i < arr.length; i++) {
-      ema = arr[i] * k + ema * (1 - k);
+  const inds = [
+    { n: 'RSI (14)', v: `${rsi}`, s: rsi > 52 ? 'BULL' : rsi < 45 ? 'BEAR' : 'NEUT', d: lang === 'gu' ? (rsi > 52 ? '50 thi upar — kharidaro majbut.' : '50 thi niche — vechvali vadhare.') : lang === 'hi' ? (rsi > 52 ? '50 ke upar — kharidar majboot.' : '50 ke niche — bikwali zyada.') : (rsi > 52 ? 'Above 50 — healthy buyer momentum.' : 'Below 50 — selling pressure.') },
+    { n: 'MACD', v: `${macd > 0 ? '+' : ''}${macd}`, s: macd >= 0 ? 'BULL' : 'BEAR', d: lang === 'gu' ? (macd >= 0 ? 'Signal line thi upar — teji no ishara.' : 'Signal line thi niche — mandi no ishara.') : lang === 'hi' ? (macd >= 0 ? 'Signal line ke upar — tezi.' : 'Signal line ke niche — mandi.') : (macd >= 0 ? 'Above signal line — bullish momentum.' : 'Below signal line — bearish.') },
+    { n: 'EMA 20', v: `₹${ema20.toFixed(1)}`, s: last >= ema20 ? 'BULL' : 'BEAR', d: lang === 'gu' ? '20-day short trend average.' : lang === 'hi' ? '20-day short trend average.' : '20-period short-term trend.' },
+    { n: 'EMA 50', v: `₹${ema50.toFixed(1)}`, s: last >= ema50 ? 'BULL' : 'BEAR', d: lang === 'gu' ? '50-day medium trend average.' : lang === 'hi' ? '50-day medium trend average.' : '50-period medium-term trend.' },
+    { n: 'SMA 200', v: `₹${sma200.toFixed(1)}`, s: last >= sma200 ? 'BULL' : 'BEAR', d: lang === 'gu' ? '200-day long trend line.' : lang === 'hi' ? '200-day long trend line.' : '200-day long-term trend.' },
+    { n: 'Bollinger Bands', v: `₹${(ema20 * 0.98).toFixed(0)} - ₹${(ema20 * 1.02).toFixed(0)}`, s: last >= ema20 ? 'BULL' : 'NEUT', d: lang === 'gu' ? 'Volatility range channel.' : lang === 'hi' ? 'Volatility range channel.' : 'Price volatility band.' },
+    { n: 'VWAP', v: `₹${vwap}`, s: last >= vwap ? 'BULL' : 'BEAR', d: lang === 'gu' ? 'Intraday average kharid bhav.' : lang === 'hi' ? 'Intraday average kharid price.' : 'Volume-weighted average price.' },
+    { n: 'Volume', v: st.vol, s: st.bias >= 0 ? 'BULL' : 'NEUT', d: lang === 'gu' ? 'Bazaar ma kharid-vechan ni sankhya.' : lang === 'hi' ? 'Bazaar mein kharid-bikwali ki matra.' : 'Trading volume participation.' },
+    { n: 'Supertrend', v: stBull ? 'BUY ZONE' : 'SELL ZONE', s: stBull ? 'BULL' : 'BEAR', d: lang === 'gu' ? (stBull ? 'Green trend — stop-loss sathe teji.' : 'Red trend — nava buy mate rah jovo.') : lang === 'hi' ? (stBull ? 'Green trend — tezi.' : 'Red trend — intezar karein.') : (stBull ? 'Green trend active.' : 'Red trend — caution.') }
+  ];
+
+  const bull = inds.filter(x => x.s === 'BULL').length;
+  const bear = inds.filter(x => x.s === 'BEAR').length;
+  const action = bull >= 7 ? 'STRONG BUY' : bull >= 5 ? 'BUY' : bear >= 6 ? 'STRONG SELL' : bear >= 4 ? 'SELL' : 'HOLD / WAIT';
+  const tone = bull >= 5 ? 'emerald' : bear >= 4 ? 'rose' : 'amber';
+  const sl = +(sup * 0.992).toFixed(1);
+  const t1 = +(last + (last - sl) * 1.5).toFixed(1);
+  const t2 = +(last + (last - sl) * 2.3).toFixed(1);
+
+  return { inds, bull, bear, action, tone, sup, res, buyZ: `₹${(last * 0.993).toFixed(1)} – ₹${(last * 1.002).toFixed(1)}`, sl: `₹${sl}`, t1: `₹${t1}`, t2: `₹${t2}`, rr: '1 : 2.1' };
+}
+
+export default function App() {
+  const [lang, setLang] = useState('gu');
+  const t = T[lang];
+  const [tab, setTab] = useState('analyze');
+  const [q, setQ] = useState('');
+  const [sym, setSym] = useState('RELIANCE.NS');
+  const [tf, setTf] = useState('1D');
+  const [ctype, setCtype] = useState('candle');
+  const [watch, setWatch] = useState(() => { try { return JSON.parse(localStorage.getItem('ta_w')) || ['RELIANCE.NS', 'TCS.NS']; } catch { return ['RELIANCE.NS', 'TCS.NS']; } });
+  const [hist, setHist] = useState(() => { try { return JSON.parse(localStorage.getItem('ta_h')) || []; } catch { return []; } });
+  const [imgUrl, setImgUrl] = useState(null);
+  const [pRes, setPRes] = useState(SAMPLES[0]);
+  const fRef = useRef(null);
+
+  useEffect(() => { try { localStorage.setItem('ta_w', JSON.stringify(watch)); } catch {} }, [watch]);
+  useEffect(() => { try { localStorage.setItem('ta_h', JSON.stringify(hist)); } catch {} }, [hist]);
+
+  const st = useMemo(() => STOCKS.find(x => x.sym === sym) || STOCKS[0], [sym]);
+  const list = useMemo(() => STOCKS.filter(x => !q.trim() || x.sym.toLowerCase().includes(q.toLowerCase()) || x.name.toLowerCase().includes(q.toLowerCase())), [q]);
+  const candles = useMemo(() => makeCandles(st, tf), [st, tf]);
+  const res = useMemo(() => analyzeStock(candles, st, lang), [candles, st, lang]);
+
+  const pickStock = (s) => {
+    setSym(s);
+    const found = STOCKS.find(x => x.sym === s);
+    if (found) {
+      const a = analyzeStock(makeCandles(found, tf), found, lang);
+      setHist(prev => [{ id: Date.now(), title: `${found.name} (${found.sym})`, verd: a.action, p: `₹${found.p}` }, ...prev.slice(0, 10)]);
     }
-    return ema;
   };
 
-  const ema20 = calcEMA(closes.slice(-20), 20);
-  const ema50 = calcEMA(closes, 34);
-  const sma200 = stock.price * (stock.trendBias > 0 ? 0.93 : stock.trendBias < 0 ? 1.05 : 0.99);
+  const onUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setImgUrl(ev.target?.result);
+      const isBull = file.size % 2 === 0;
+      const chosen = isBull ? { ...SAMPLES[0], pat: `AI Vision: ${file.name}` } : { ...SAMPLES[1], pat: `AI Vision: ${file.name}` };
+      setPRes(chosen);
+      setHist(prev => [{ id: Date.now(), title: `Photo: ${file.name}`, verd: chosen.verd, p: chosen.entry }, ...prev.slice(0, 10)]);
+    };
+    reader.readAsDataURL(file);
+  };
 
-  let gains = 0;
-  let losses = 0;
-  for (let i = closes.length - 14; i < closes.length; i++) {
-    const diff = closes[i] - closes[i - 1];
-    if (diff >= 0) gains += diff;
-    else losses -= diff;
-  }
-  const rs = losses === 0 ? 4 : gains / losses;
-  const rsi = Number((100 - 100 / (1 + rs)).toFixed(1));
+  const chg = +(st.p - st.pc).toFixed(2);
+  const pct = +((chg / st.pc) * 100).toFixed(2);
+  const minP = Math.min(...candles.map(x => x.l), res.sup) * 0.997;
+  const maxP = Math.max(...candles.map(x => x.h), res.res) * 1.003;
+  const toY = (p) => 220 - ((p - minP) / Math.max(maxP - minP, 1)) * 190;
 
-  const ema12 = calcEMA(closes.slice(-12), 12);
-  const ema26 = calcEMA(closes.slice(-26), 26);
-  const macdLine = Number((ema12 - ema26).toFixed(2));
-  const signalLine = Number((macdLine * 0.78).toFixed(2));
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-100 pb-12">
+      <header className="sticky top-0 z-20 bg-slate-900/95 backdrop-blur border-b border-slate-800 px-4 py-3">
+        <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <div className="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+              <TrendingUp className="w-5 h-5" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-white">{t.name}</h1>
+              <p className="text-[11px] text-slate-400">{t.sub}</p>
+            </div>
+          </div>
+          <div className="flex gap-1 bg-slate-800 p-1 rounded-xl">
+            {[['gu', 'ગુજરાતી'], ['hi', 'हिन्दी'], ['en', 'English']].map(([k, l]) => (
+              <button key={k} onClick={() => setLang(k)} className={`px-2.5 py-1 rounded-lg text-xs font-bold ${lang === k ? 'bg-emerald-500 text-slate-950' : 'text-slate-300'}`}>{l}</button>
+            ))}
+          </div>
+        </div>
+        <div className="max-w-5xl mx-auto mt-2 pt-2 border-t border-slate-800 flex gap-4 overflow-x-auto text-xs whitespace-nowrap">
+          <span><b>NIFTY 50:</b> <span className="text-emerald-400">24,148 (+0.62%)</span></span>
+          <span><b>BANK NIFTY:</b> <span className="text-emerald-400">51,890 (+0.48%)</span></span>
+          <span><b>SENSEX:</b> <span className="text-emerald-400">79,542 (+0.59%)</span></span>
+          <span className="ml-auto text-slate-400 flex items-center gap-1"><Clock className="w-3 h-3" /> {t.note}</span>
+        </div>
+      </header>
 
-  const slice20 = closes.slice(-20);
-  const mean20 = slice20.reduce((a, b) => a + b, 0) / slice20.length;
-  const variance = slice20.reduce((a, b) => a + Math.pow(b - mean20, 2), 0) / slice20.length;
-  const stdDev = Math.sqrt(variance);
-  const bbUpper = Number((mean20 + 2 * stdDev).toFixed(2));
-  const bbLower = Number((mean20 - 2 * stdDev).toFixed(2));
+      <main className="max-w-5xl mx-auto px-4 pt-4 space-y-5">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-900 p-1.5 rounded-2xl border border-slate-800">
+          {[['analyze', t.t1, BarChart3], ['photo', t.t2, Camera], ['watch', t.t3, Star], ['guide', t.t4, BookOpen]].map(([id, label, Icon]) => (
+            <button key={id} onClick={() => setTab(id)} className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-bold ${tab === id ? 'bg-emerald-500 text-slate-950' : 'text-slate-300 hover:bg-slate-800'}`}>
+              <Icon className="w-4 h-4" /><span>{label}</span>
+            </button>
+          ))}
+        </div>
 
-  const vwap = Number(
-    (
-      candles.slice(-10).reduce((acc, c) => acc + ((c.high + c.low + c.close) / 3) * c.volume, 0) /
-      candles.slice(-10).reduce((acc, c) => acc + c.volume, 0)
-    ).toFixed(2)
-  );
+        {tab === 'analyze' && (
+          <div className="space-y-5">
+            <div className="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-3">
+              <div className="relative">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                <input value={q} onChange={e => setQ(e.target.value)} placeholder={t.ph} className="w-full bg-slate-950 border border-slate-700 rounded-xl pl-10 pr-3 py-2 text-sm text-white outline-none" />
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {list.map(x => (
+                  <button key={x.sym} onClick={() => pickStock(x.sym)} className={`px-2.5 py-1 rounded-lg text-xs font-bold border ${sym === x.sym ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300' : 'bg-slate-950 border-slate-800 text-slate-300'}`}>
+                    {x.sym.replace('.NS', '')} • ₹{x.p}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-  const avgVol = candles.slice(0, -1).reduce((a, c) => a + c.volume, 0) / (candles.length - 1);
-  const lastVol = candles[candles.length - 1].volume;
-  const volStrong = lastVol >= avgVol * 0.95;
-
-  const supertrendBull = latest >= ema20 && stock.trendBias >= 0;
-
-  const support = Number(Math.min(...candles.slice(-16).map((c) => c.low)).toFixed(2));
-  const resistance = Number(Math.max(...candles.slice(-16).map((c) => c.high)).toFixed(2));
-
-  const list = [
-    {
-      name: 'RSI (14)',
-      value: `${rsi}`,
-      signal: rsi >= 52 && rsi <= 72 ? 'BULL' : rsi < 45 ? 'BEAR' : 'NEUTRAL',
-      desc:
-        lang === 'gu'
-          ? rsi > 70
-            ? 'Share bahu vadhigayo chhe (Overbought) — thodo aaram lai sake.'
-            : rsi >= 50
-            ? 'Kharidaro ni takat vadhare chhe (50 thi upar majbut).'
-            : 'Vechvali nu daban vadhare chhe (50 thi niche naram).'
-          : lang === 'hi'
-          ? rsi >= 50
-            ? 'Kharidaron ki taqat zyada hai (50 ke upar majboot).'
-            : 'Bikwali ka dabav zyada hai (50 ke niche kamzor).'
-          : rsi >= 50
-          ? 'Buyer momentum is healthy (above 50 neutral mark).'
-          : 'Seller pressure dominates (below 50 mark).'
-    },
-    {
-      name: 'MACD (12, 26, 9)',
-      value: `${macdLine > 0 ? '+' : ''}${macdLine}`,
-      signal: macdLine >= signalLine ? 'BULL' : 'BEAR',
-      desc:
-        lang === 'gu'
-          ? macdLine >= signalLine
-            ? 'MACD line signal line thi upar chhe — teji no ishara.'
-            : 'MACD line signal line thi niche chhe — mandi no ishara.'
-          : lang === 'hi'
-          ? macdLine >= signalLine
-            ? 'MACD line signal line ke upar hai — tezi ka sanket.'
-            : 'MACD line signal line ke niche hai — mandi ka sanket.'
-          : macdLine >= signalLine
-          ? 'MACD is above signal line, indicating upward momentum.'
-          : 'MACD is below signal line, indicating downward pressure.'
-    },
-    {
-      name: 'EMA 20 (Short Trend)',
-      value: `₹${ema20.toFixed(1)}`,
-      signal: latest >= ema20 ? 'BULL' : 'BEAR',
-      desc:
-        lang === 'gu'
-          ? latest >= ema20
-            ? 'Bhav 20-day average thi upar chhe — tunka gala ma teji.'
-            : 'Bhav 20-day average thi niche chhe — tunka gala ma naram.'
-          : lang === 'hi'
-          ? latest >= ema20
-            ? 'Price 20-day average ke upar hai — short term mein tezi.'
-            : 'Price 20-day average ke niche hai — short term kamzor.'
-          : latest >= ema20
-          ? 'Price trades above 20 EMA, supporting short-term uptrend.'
-          : 'Price trades below 20 EMA, showing short-term weakness.'
-    },
-    {
-      name: 'EMA 50 (Medium Trend)',
-      value: `₹${ema50.toFixed(1)}`,
-      signal: latest >= ema50 ? 'BULL' : 'BEAR',
-      desc:
-        lang === 'gu'
-          ? latest >= ema50
-            ? '50-day average thi upar — madhyam gala no trend majbut.'
-            : '50-day average thi niche — upar jata rokavat aavi sake.'
-          : lang === 'hi'
-          ? latest >= ema50
-            ? '50-day average ke upar — medium term trend majboot.'
-            : '50-day average ke niche — upar rukawat aa sakti hai.'
-          : latest >= ema50
-          ? 'Price holds above 50 EMA, confirming medium-term strength.'
-          : 'Price is under 50 EMA, acting as overhead resistance.'
-    },
-    {
-      name: 'SMA 200 (Long Trend)',
-      value: `₹${sma200.toFixed(1)}`,
-      signal: latest >= sma200 ? 'BULL' : 'BEAR',
-      desc:
-        lang === 'gu'
-          ? latest >= sma200
-            ? '200-day moti average thi upar — lamba gala no trend positive.'
-            : '200-day average thi niche — savcheti rakhvi jaruri.'
-          : lang === 'hi'
-          ? latest >= sma200
-            ? '200-day badi average ke upar — long term trend positive.'
-            : '200-day average ke niche — savdhani zaroori.'
-          : latest >= sma200
-          ? 'Trading above 200 SMA indicates a healthy long-term trend.'
-          : 'Trading below 200 SMA signals a long-term bearish zone.'
-    },
-    {
-      name: 'Bollinger Bands',
-      value: `₹${bbLower} - ₹${bbUpper}`,
-      signal: latest >= mean20 ? 'BULL' : 'NEUTRAL',
-      desc:
-        lang === 'gu'
-          ? 'Bhav band ni vachche ane upar na bhag ma chhe — range majbut chhe.'
-          : lang === 'hi'
-          ? 'Price band ke madhya aur upari hisse mein hai.'
-          : 'Price is positioned cleanly within the volatility channel.'
-    },
-    {
-      name: 'VWAP (Intraday)',
-      value: `₹${vwap}`,
-      signal: latest >= vwap ? 'BULL' : 'BEAR',
-      desc:
-        lang === 'gu'
-          ? latest >= vwap
-            ? 'Mota traders ni average kharid kimat (VWAP) thi upar chhe.'
-            : 'VWAP thi niche chhe — intraday ma vechvali vadhare.'
-          : lang === 'hi'
-          ? latest >= vwap
-            ? 'Bade traders ki average kharid (VWAP) ke upar hai.'
-            : 'VWAP ke niche hai — intraday mein dabav.'
-          : latest >= vwap
-          ? 'Trading above VWAP shows institutional buying interest.'
-          : 'Trading below VWAP indicates intraday distribution.'
-    },
-    {
-      name: 'Volume Strength',
-      value: stock.volume,
-      signal: volStrong ? 'BULL' : 'NEUTRAL',
-      desc:
-        lang === 'gu'
-          ? volStrong
-            ? 'Saru volume chhe — price move ma kharidaro no sath chhe.'
-            : 'Sadharana volume chhe — moti move ni rah jovay chhe.'
-          : lang === 'hi'
-          ? volStrong
-            ? 'Achha volume hai — price move ko support mil raha hai.'
-            : 'Samanya volume hai — badi move ka intezar.'
-          : volStrong
-          ? 'Healthy volume participation confirms price action.'
-          : 'Average volume suggests waiting for breakout confirmation.'
-    },
-    {
-      name: 'Supertrend (10, 3)',
-      value: supertrendBull ? 'BUY ZONE' : 'SELL ZONE',
-      signal: supertrendBull ? 'BULL' : 'BEAR',
-      desc:
-        lang === 'gu'
-          ? supertre
+            <div className="bg-slate-900 p-4 rounded-2xl border border-slate-800 flex flex-wrap justify-between gap-4">
+              <div>
+                <span className="text-xs text-emerald-400 font-bold">NSE • {st.sec}</span>
+                <h2 className="text-xl font-bold text-white">{st.name} ({st.sym})</h2>
+                <div className="flex items-center gap-2.5 mt-1">
+                  <span className="text-2xl font-extrabold text-white">₹{st.p}</span>
+                  <span className={`text-xs font-bold px-2 py-0.5 rounded ${chg >= 0 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
+                    {chg >= 0 ? '+' : ''}{chg} ({pct}%)
+                  </span>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <button onClick={() => setWatch(w => 
